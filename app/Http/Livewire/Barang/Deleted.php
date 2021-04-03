@@ -42,8 +42,32 @@ class Deleted extends Component
         }
     }
 
-    public function restored($id)
+    public function restore($id)
     {
-        
+        try {
+            $cek = Barang::onlyTrashed()->findOrFail($id);
+            $cek->restore();
+
+
+            $this->getData();
+            $this->emit('refresh-table');
+            $this->emit('success', 'Data Berhasil Dipulihkan !');
+        } catch (\Exception $e) {
+            $this->emit('error', 'Terjadi Kesalahan !');
+        }
+    }
+
+    public function forceDel($id)
+    {
+        try {
+            $cek = Barang::onlyTrashed()->findOrFail($id);
+            $cek->forceDelete();
+
+            $this->getData();
+            $this->emit('success', 'Data Berhasil di-Hapus Permanen !');
+        } catch (\Exception $e) {
+            dd($e);
+            $this->emit('error', 'Terjadi Kesalahan !');
+        }
     }
 }
